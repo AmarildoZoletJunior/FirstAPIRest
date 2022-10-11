@@ -71,8 +71,8 @@ app.delete("/game/:id",(req,res)=>{
 
 app.post("/game",(req,res)=>{
     let {nome,ano} = req.body;
-    if(nome !== undefined || nome !== null || nome.length > 1){
-        if(ano == undefined || ano == null || ano.length < 1 || isNaN(ano)){
+    if(nome !== undefined && nome !== null && nome.length > 1){
+        if(ano == undefined && ano == null && ano.length < 1 && isNaN(ano)){
             res.sendStatus(400);
             res.statusCode = 400;
         }else{
@@ -99,13 +99,13 @@ app.put("/game/:id",(req,res)=>{
     }else{
         let idConvertido = parseInt(id);
         let game = DB.games.find(gameid => gameid.id == idConvertido);
-        if(game.nome !== undefined || game.nome !== null){
-            if(game.ano == undefined || game.ano == null){
+        if(game.nome !== undefined && game.nome !== null){
+            if(game.ano == undefined && game.ano == null){
                 res.sendStatus(400);
                 res.statusCode = 400;
             }else{
-                if(nome !== undefined || nome !== null || nome.length > 1){
-                    if(ano !== undefined || ano !== null || ano.length > 1 || isNaN(anoConvertido)){
+                if(nome !== undefined && nome !== null && nome.length > 1){
+                    if(ano !== undefined && ano !== null && ano.length > 1 && isNaN(anoConvertido)){
                         game.nome = nome;
                         game.ano = anoConvertido;
                         res.sendStatus(200);
