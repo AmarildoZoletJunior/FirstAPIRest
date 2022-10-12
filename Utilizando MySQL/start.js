@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const app = express();
 
@@ -8,9 +9,11 @@ const PORT = process.env.PORT || 3000;
 
 
 const conexao = require("./conexao/conexao");
-const tabela = require("./Modal/Tabela");
+const tabela = require("./Modal/games");
+const usuarios = require("./Modal/usuarios");
 
 
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -69,7 +72,7 @@ app.post("/game", (req, res) => {
     }
 })
 
-//Deletar
+//Deletar um game
 app.delete("/game/:id", (req, res) => {
     let id = req.params.id;
     let convertido = parseInt(id);
@@ -92,6 +95,7 @@ app.delete("/game/:id", (req, res) => {
     }
 })
 
+//Editar um game
 app.put("/game/:id", (req, res) => {
     let id = req.params.id;
     let convertido = parseInt(id);
@@ -104,33 +108,46 @@ app.put("/game/:id", (req, res) => {
                         tabela.update({
                             nome: nome,
                             ano: ano,
-                        }, { where: { id: convertido }}).then(()=>{
+                        }, { where: { id: convertido } }).then(() => {
                             res.statusCode = 200;
                             res.sendStatus(200);
                         })
-                    }else{
+                    } else {
                         console.log("Erro");
-        res.statusCode = 400;
-        res.sendStatus(400)
+                        res.statusCode = 400;
+                        res.sendStatus(400)
                     };
                 });
-            }else{
-                console.log("Erro");
-        res.statusCode = 400;
-        res.sendStatus(400)
+            } else {
+                console.log("Erroa");
+                res.statusCode = 400;
+                res.sendStatus(400)
             };
-        }else{
+        } else {
             console.log("Erro");
-        res.statusCode = 400;
-        res.sendStatus(400)
+            res.statusCode = 400;
+            res.sendStatus(400)
         };
-    }else{
+    } else {
         console.log("Erro");
         res.statusCode = 400;
         res.sendStatus(400)
     };
 })
 
+app.post("/auth",(req,res)=>{
+    let {email,senha} = req.body;
+    let regexEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+    if(email !== undefined && email !== null && regexEmail.test(email) === true){
+        if(senha !== undefined && senha !== null && senha.length > 3){
+            
+        }else{
+
+        }
+    }else{
+        
+    }
+})
 
 app.listen(PORT, ip, () => {
     console.log("Servidor funcionando no ip: 192.168.0.100:3000");

@@ -1,7 +1,7 @@
 const sequelize = require("sequelize");
 const Sequelize = require("../conexao/conexao");
 
-const tabela = Sequelize.define("APIRest",{
+const games = Sequelize.define("games",{
     nome:{
         type: sequelize.STRING,
     },
@@ -10,6 +10,6 @@ const tabela = Sequelize.define("APIRest",{
     }
 })
 
-// tabela.sync({force:true})
+// games.sync({force:true})
 
-module.exports = tabela;
+module.exports = games;
