@@ -1,6 +1,6 @@
 const sequelize = require("sequelize");
 
-const conexao = new sequelize("testeapi","root","junior123",{
+const conexao = new sequelize("testeapi","root","Junior123",{
    host: "localhost",
    dialect: "mysql",
 });

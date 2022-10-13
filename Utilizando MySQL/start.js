@@ -1,10 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
+const jwtSecret = "testeparaapi"
 
 const app = express();
 
-const ip = "192.168.0.100";
+const ip = "192.168.1.6";
 const PORT = process.env.PORT || 3000;
 
 
@@ -16,6 +19,13 @@ const usuarios = require("./Modal/usuarios");
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
+function auth(req,res,next){
+    const authToken = req.headers['authorization'];
+    
+}
+
 
 //Listar todos
 app.get("/games", (req, res) => {
@@ -114,8 +124,8 @@ app.put("/game/:id", (req, res) => {
                         })
                     } else {
                         console.log("Erro");
-                        res.statusCode = 400;
-                        res.sendStatus(400)
+                        res.statusCode = 404;
+                        res.sendStatus(404)
                     };
                 });
             } else {
@@ -135,17 +145,37 @@ app.put("/game/:id", (req, res) => {
     };
 })
 
+//autenticação de usuario
 app.post("/auth",(req,res)=>{
     let {email,senha} = req.body;
     let regexEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
     if(email !== undefined && email !== null && regexEmail.test(email) === true){
         if(senha !== undefined && senha !== null && senha.length > 3){
-            
+            usuarios.findOne({where: {email:email,senha:senha}}).then((resposta)=>{
+            if(resposta != null){
+                jwt.sign({id:resposta.id,email:resposta.email},jwtSecret,{expiresIn:"48h"},(err,token)=>{
+                    if(err){
+                        res.statusCode = 401;
+                        res.sendStatus(401);
+                    }else{
+                        res.statusCode = 200;
+                        return res.json({token:token});
+                    }
+                });
+            }else{
+                res.statusCode = 404;
+                res.sendStatus(404);
+            }
+            }).catch((erro)=>{
+                console.log(erro)
+            })
         }else{
-
+            res.statusCode = 404;
+            res.sendStatus(404);
         }
     }else{
-        
+        res.statusCode = 404;
+        res.sendStatus(404);
     }
 })
 
